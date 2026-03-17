@@ -18,9 +18,8 @@ if st.button('Make prediction'):
         pixeltruth_api_url = 'https://pixel-truth-326378883173.europe-west1.run.app'
         response = requests.post(pixeltruth_api_url, files=files)
         prediction = response.json()
-        proba=prediction[0]
+        proba=prediction["Probability"]
         if proba>0.5:
             st.write(f"image fake with probability of {proba}")
         else:
             st.write(f"image real with probability of {1-proba}")
-        
