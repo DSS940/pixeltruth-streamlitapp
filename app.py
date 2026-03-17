@@ -1,25 +1,44 @@
+
 import streamlit as st
 from PIL import Image
 import requests
 
+st.set_page_config(
+    page_title="Pixel Truth",
+    page_icon="🔍",
+    layout="wide"
+)
+
 st.title("Pixel Truth")
-st.write("Upload an image")
-uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
+st.header("Détecteur d'images générées par l'IA")
 
-if uploaded_file:
-    image = Image.open(uploaded_file)
-    st.image(image)
+col1, col2 = st.columns(2)
 
-if st.button('Make prediction'):
-    if uploaded_file is None:
-        st.warning("Please upload an image")
-    else:
-        files = {'file': uploaded_file}
-        pixeltruth_api_url = 'https://pixel-truth-326378883173.europe-west1.run.app'
-        response = requests.post(pixeltruth_api_url, files=files)
-        prediction = response.json()
-        proba=prediction["Probability"]
-        if proba>0.5:
-            st.write(f"image fake with probability of {proba}")
+with col1:
+    uploaded_file = st.file_uploader("Choisis une image", type=["jpg", "jpeg", "png"])
+
+    if uploaded_file:
+        image = Image.open(uploaded_file)
+        st.image(image)
+
+with col2:
+    st.write("")
+    st.write("")
+    if st.button('🔍 Prédire', use_container_width=True):
+        if uploaded_file is None:
+            st.warning("Erreur, image non trouvée")
         else:
-            st.write(f"image real with probability of {1-proba}")
+            try:
+                files = {'file': uploaded_file}
+                pixeltruth_api_url = 'https://pixel-truth-326378883173.europe-west1.run.app'
+                with st.spinner('Analyse en cours...'):
+                    response = requests.post(pixeltruth_api_url, files=files)
+                prediction = response.json()
+                proba = prediction["Probability"]
+                st.write(f"la probabilité est {proba}")
+                if proba > 0.5:
+                    st.write(f"🤖 Image générée par IA avec({proba*100:.1f}%) de probabilité")
+                else:
+                    st.write(f"📸 Image réelle avec ({(1-proba)*100:.1f}%) de probabilité")
+            except:
+                st.error("Erreur de connexion à l'API")
