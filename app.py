@@ -25,6 +25,7 @@ with col2:
     st.write("")
     st.write("")
     if st.button('🔍 Prédire', use_container_width=True):
+        st.balloons()
         if uploaded_file is None:
             st.warning("Erreur, image non trouvée")
         else:
