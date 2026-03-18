@@ -3,6 +3,25 @@ import streamlit as st
 from PIL import Image
 import requests
 
+st.markdown("""
+<style>
+/* Make metric bigger */
+[data-testid="stMetricValue"] {
+    font-size: 32px;
+}
+[data-testid="stMetricLabel"] {
+    font-size: 20px;
+}
+
+/* Make info box bigger */
+.stAlert {
+    font-size: 18px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+
 st.set_page_config(
     page_title="Pixel Truth",
     page_icon="🔍",
@@ -36,11 +55,18 @@ with col2:
                 prediction = response.json()
                 proba = prediction["Probability"]
                 if proba > 0.5:
-                    st.metric(label="Résultat", value="🤖 Image générée par IA")
-                    st.info(f"Confiance : {proba*100:.1f}%")
+                    st.metric(label="", value="🤖 Image générée par IA")
+                    confidence = proba
+                    color = "#F44336"
                 else:
-                    st.metric(label="Résultat", value="📸 Image réelle")
-                    st.info(f"Confiance : {(1-proba)*100:.1f}%")
+                    st.metric(label="", value="📸 Image réelle")
+                    confidence = 1 - proba
+                    color = "#4CAF50"
+
+                st.markdown(
+                    f"<h2 style='color: {color};'>Confiance : {confidence*100:.1f}%</h2>",
+                    unsafe_allow_html=True
+                )
             except Exception as e:
                 st.error(f"Erreur : {e}")
                 st.write(response.text if 'response' in locals() else "Pas de réponse")
