@@ -25,7 +25,6 @@ with col2:
     st.write("")
     st.write("")
     if st.button('🔍 Prédire', use_container_width=True):
-        st.balloons()
         if uploaded_file is None:
             st.warning("Erreur, image non trouvée")
         else:
@@ -38,10 +37,10 @@ with col2:
                 proba = prediction["Probability"]
                 if proba > 0.5:
                     st.metric(label="Résultat", value="🤖 Image générée par IA")
-                    st.info(f"Probabilité : {proba*100:.1f}%")
+                    st.info(f"Confiance : {proba*100:.1f}%")
                 else:
                     st.metric(label="Résultat", value="📸 Image réelle")
-                    st.info(f"Probabilité : {(1-proba)*100:.1f}%")
+                    st.info(f"Confiance : {(1-proba)*100:.1f}%")
             except Exception as e:
                 st.error(f"Erreur : {e}")
                 st.write(response.text if 'response' in locals() else "Pas de réponse")
